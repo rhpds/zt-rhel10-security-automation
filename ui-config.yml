@@ -1,0 +1,30 @@
+---
+antora:
+  name: modules
+  dir: www
+  modules:
+    - name: "01-subscribe-ansible"
+      label: "Subscribe Ansible"
+      solveButton: false
+    - name: "02-create-audit"
+      label: "Create Audit"
+      solveButton: false
+    - name: "03-untitled-challenge-1d4dyo"
+      label: "Untitled Challenge 1d4dyo"
+      solveButton: false
+    - name: "04-selinux"
+      label: "Selinux"
+      solveButton: false
+    - name: "05-auditd"
+      label: "Auditd"
+      solveButton: false
+    - name: "06-fapolicyd"
+      label: "Fapolicyd"
+      solveButton: false
+    - name: "07-bsa-playbook"
+      label: "Bsa Playbook"
+      solveButton: false
+
+tabs:
+  - name: ">_ terminal"
+    url: /wetty_rhel/ssh/root

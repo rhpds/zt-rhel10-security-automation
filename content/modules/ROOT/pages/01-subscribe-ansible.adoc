@@ -1,0 +1,18 @@
+Red Hat Enterprise Linux System Roles are a collection of supported
+Ansible roles that ensure consistent workflows and streamline the
+execution of manual tasks.
+
+We have already installed "`rhel-system-roles`" for this lab.
+
+You can check to see what version of `+rhel-system-roles+` package are
+installed with the command below. Copy and paste the command below into
+*> Shell*.
+
+[source,bash,run]
+----
+sudo dnf info  rhel-system-roles
+----
+
+Here’s what the result should look similar to.
+
+With our packages installed lets head to the next step.

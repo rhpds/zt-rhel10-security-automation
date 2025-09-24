@@ -1,0 +1,9 @@
+---
+name: modules
+version: master
+
+asciidoc:
+  attributes:
+    lab_name: "RHEL 10 Security Automation"
+    release-version: master
+    page-pagination: true

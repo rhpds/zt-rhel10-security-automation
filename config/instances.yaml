@@ -20,6 +20,9 @@ virtualmachines:
     cores: 1
     packages:
       - tmux
+      - git
+      - vim
+      - cockpit
     image_size: "40G"
     tags:
       - key: "AnsibleGroup"

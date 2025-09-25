@@ -1,36 +1,4 @@
 #!/bin/bash
-# until [ -f /opt/instruqt/bootstrap/host-bootstrap-completed ]
-# do
-#     echo "Waiting for Instruqt to finish booting the VM"
-#     sleep 1
-# done
-
-subscription-manager register --org=12451665 --activationkey=${ACTIVATION_KEY} --force
-
-tee -a soe.yml << EOF
----
-- hosts: localhost
-  vars:
-    kernel_settings_sysctl:
-      - name: vm.swappiness
-        value: 20
-      - name: vm.dirty_ratio
-        value: 40
-      - name: vm.dirty_expire_centisecs
-        value: 500
-      - name: vm.dirty_writeback_centisecs
-        value: 100
-      - name: kernel.sem
-        value: "250 32000 100 128"
-    tlog_scope_sssd: all
-  roles:
-    - role: rhel-system-roles.kernel_settings
-    - role: rhel-system-roles.tlog
-EOF
-
-mkdir -p /root/.cloudrepos
-mv /etc/yum.repos.d/google-cloud.repo /root/.cloudrepos/
-mv /etc/yum.repos.d/rh-cloud.repo /root/.cloudrepos/
 
 #useradd rhel
 echo -e "test\ntest" | passwd rhel

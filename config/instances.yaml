@@ -1,6 +1,6 @@
 ---
 virtualmachines:
-  - name: "rhel1"
+  - name: "rhel"
     image: "rhel-10-0-07-09-25-3"
     bootloader: efi
     memory: "4G"
@@ -30,7 +30,7 @@ virtualmachines:
       - vim
     tags:
       - key: "AnsibleGroup"
-        value: "bastions"
+        value: "nodes"
     networks:
       - default      
 #  - name: "client1"

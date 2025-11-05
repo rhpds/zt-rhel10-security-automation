@@ -13,6 +13,4 @@ installed with the command below. Copy and paste the command below into
 sudo dnf info  rhel-system-roles
 ----
 
-Here’s what the result should look similar to.
-
 With our packages installed lets head to the next step.

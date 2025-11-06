@@ -9,7 +9,6 @@ cat <<EOF > add-audit-user.yml
   become: true
   vars:
     - group_name: "auditteam"
-    - tmp_password: "$6$rounds=656000$mysecretsalt$eAieC11.b9YrreFtSVQGB0wK2gxhlNk0IOYmtbF7OLGgHFG0Ie99zSZm8wr7P9ALqtshUmn8Wo2gvJPSx5oPS0"
     - service_accounts:
       - name: "johnp"
 

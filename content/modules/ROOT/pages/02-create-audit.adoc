@@ -26,7 +26,16 @@ It’s used to automate tasks, like setting up a new user or installing
 software.
 
 We will be using a pre-written ansible playbook to add a new group and
-user.
+user. 
+
+This is stored in the home for the rhel user, so we will change our working directory to work from there.
+
+[source,bash,run]
+----
+cd /home/rhel
+----
+
+Now let's take a look at the playbook called add-audit-user.yml
 
 [source,bash,run]
 ----

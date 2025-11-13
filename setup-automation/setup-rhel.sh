@@ -61,3 +61,38 @@ cat >  /var/www/html/index.html << EOF
 EOF
 
 sudo dnf install  rhel-system-roles -y
+
+cat <<EOF > /var/www/html/index.html
+          <html>
+            <head>
+              <title>My Test Website</title>
+            </head>
+            <body>
+              <h1>Welcome to my Test website!</h1>
+              <p>This is a basic website created using HTML.</p>
+            </body>
+          </html>
+
+EOF
+
+cat >webdev.yml << EOF
+---
+- hosts: localhost
+  vars:
+    sudo_sudoers_files:
+      - path: /etc/sudoers.d/webdev
+        user_specifications:
+          - users:
+              - davidj
+              - "%webdev"
+            hosts:
+              - ALL
+            operators:
+              - ALL
+            commands:
+              - /usr/bin/systemctl start httpd
+              - /usr/bin/systemctl stop httpd
+              - /usr/bin/systemctl status httpd
+  roles:
+    - role: rhel-system-roles.sudo
+EOF

@@ -166,4 +166,4 @@ Once we have started the service, lets make sure it’s running.
 sudo systemctl status httpd
 ----
 
-Lets head to the next section.
+This will Fail, and that is ok, we will fix it the next section.

@@ -29,6 +29,13 @@ do this in a couple of different ways.
 ls -Z /home/davidj/public_html
 ----
 
+Lets exit david's account
+
+[source,bash,run]
+----
+exit
+----
+
 So lets have our SELinux system role set the permissions to allow port
 1337 and make sure the right selinux file context is on the files. We
 have a playbook we can use.
@@ -37,6 +44,9 @@ have a playbook we can use.
 ----
 cat selinux.yml
 ----
+
+
+
 
 == Ansible Playbook Explanation
 

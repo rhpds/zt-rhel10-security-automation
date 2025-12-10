@@ -9,8 +9,8 @@ antora:
     - name: "02-create-audit"
       label: "Create Audit"
       solveButton: false
-    - name: "03-untitled-challenge-1d4dyo"
-      label: "Untitled Challenge 1d4dyo"
+    - name: "03-httpd-permission"
+      label: "httpd-permission"
       solveButton: false
     - name: "04-selinux"
       label: "Selinux"

@@ -62,7 +62,7 @@ Now lets install a new program.
 
 [source,bash,run]
 ----
-sudo yum install -y vim
+sudo yum install -y htop
 ----
 
 Now lets see what aide tracked

@@ -1,24 +1,24 @@
 == Background
 
-In this lab, your manager Scott says there are is a web developer that
+For this lab, your manager Scott told you there are is a new web developer that
 is starting today.
 
-His name is David J. and he will need a dedicated account, for awith
+His name is David J. and he will need a dedicated account with
 special sudo permissions to start and stop the httpd service and the
 ability to host the website from his home directory.
 
-David’s account "`Davidj`" has been made, and he has created some of the
+David’s account "`davidj`" has been made, and he has created some of the
 needed files, but something is not working.
 
-Let’s start by switching user from root to '`davidj`' and the password
-"`redhat`" and test to see what permissions are working.
+Let’s start by switching user from root to '`davidj`' to test to see what permissions are working.
 
 [source,bash,run]
 ----
 su - davidj
 ----
 
-next we want to see what the status of httpd is
+All users should be able to see the the status of the httpd service.
+To get additional details needed as a developer, davidj needs to run with sudo permissions. 
 
 [source,bash,run]
 ----
@@ -42,11 +42,10 @@ sudo systemctl start httpd
 redhat
 ----
 
-So the account doesn;’t currently have the access to spin up and spin
-down the httpd service. To help change that we are going to use the new
-Sudo System-Role.
+So David's account doesn’t currently have the access to spin up and spin
+down the httpd service. To change that we are going to use the Sudo System-Role.
 
-Now lets close out of the davidj user and go back to our root user.
+Now let's log out of the davidj user session and go back to our root user.
 
 [source,bash,run]
 ----
@@ -55,20 +54,12 @@ exit
 
 == Ansible Playbook Explanation
 
-Now we will run create the sudo rule to add him to the sudoers to run a
-couple of commands using the sudo system rules.
+We will run create the sudo rule to add David's account to the sudoers list and limit his account to running only the necessary commands to manage the web server.
 
 [source,bash,run]
 ----
 cat webdev.yml
 ----
-
-== Ansible Playbook Explanation
-
-=== What is Ansible?
-
-Ansible is like a set of instructions that a computer can follow to do
-tasks automatically. It’s used to manage and configure servers.
 
 === What Does This Playbook Do?
 

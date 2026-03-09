@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is placing a prewritten playbook in the default user directory 
+# This is placing a prewritten playbook in the default user directory
 cat <<EOF > add-audit-user.yml
 ---
 - name: Config audit team group and members
@@ -11,8 +11,18 @@ cat <<EOF > add-audit-user.yml
     - group_name: "auditteam"
     - service_accounts:
       - name: "johnp"
+    # we will get tmp_password from a vault file
 
   tasks:
+    - name: "Load the vault variables"
+      when: vault_path is defined
+      ansible.builtin.include_vars:
+        file: "{{ vault_path }}"
+
+    - name: Create the password hash
+      ansible.builtin.command:
+        cmd: mkpasswd "{{ tmp_password }}"
+      register: pass_hash
 
     - name: Create group
       ansible.builtin.group:
@@ -24,7 +34,7 @@ cat <<EOF > add-audit-user.yml
         name: "{{ item.name }}"
         groups: "{{ group_name }}"
         append: true
-#        password: "{{ tmp_password }}"
+        password: "{{ pass_hash.stdout }}"
       with_items: "{{ service_accounts }}"
 EOF
 

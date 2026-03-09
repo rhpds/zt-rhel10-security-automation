@@ -11,6 +11,7 @@ virtualmachines:
       - tmux
       - git
       - vim
+      - mkpasswd
     tags:
       - key: "AnsibleGroup"
         value: "bastions"
@@ -28,6 +29,7 @@ virtualmachines:
       - tmux
       - git
       - vim
+      - mkpasswd
     tags:
       - key: "AnsibleGroup"
         value: "nodes"

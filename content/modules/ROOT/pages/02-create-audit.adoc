@@ -1,4 +1,4 @@
-== Module 1: Create an Audit Team user
+== Module 2: Create an Audit Team user
 === What you will learn in this lab
 
 The goals of this lab are to introduce you to the basic concepts of running ansible automation.
@@ -26,22 +26,17 @@ Let's learn to utilize Ansible for automating system security!
 If you are new to Ansible, here is a very brief overview.
 
 Ansible is a tool used to automate tasks on computers.
-Imagine you have a bunch of computers, and you want to make sure that they all have the same software installed, or you want to create new user accounts on all of them. 
-Instead of doing each task manually on every computer and risking errors on some, you can use Ansible and test your changes on one machine and then confidently apply the changes to all computers at once.
+Imagine you have a bunch of computers, and you want to make sure that they all have the same software installed. 
+Maybe you need to create new user accounts on all of them. 
+Instead of doing each task manually on every computer and risking errors on some, you can use Ansible.
+You can test your changes on one machine and then confidently apply the changes to all computers at once knowing that each system will the same.
 
-It is really a tool, a language, and a famework.
-Ansible is the term for the YAML based language that we use to write ansible automation.
-Ansible the tool runs your ansible automation code to perform tasks.
-Ansible is also a framework that you can extend.
-You can write your own Modules and group them into collections so that others in your organisation can leverage them.
-
+The runtime components and a plain text file called an ansible playbook is used to automate tasks, like setting up a new user or installing software.
 An Ansible playbook is named after a sports play book.
+It can contain or be passed variable, these get used by modules to perform tasks.
 The variables can be thought of as the ball or puck.
 The modules are the players.
 The tasks are the steps they need to take with the variables to score a goal.
-
-The playbook is used to automate tasks, like setting up a new user or installing software.
-
 
 In our exercise, we will be using a pre-written ansible playbook to add a new group and user. 
 This is stored in the home directory for the rhel user, so we will change our working directory to work from there.
@@ -85,6 +80,7 @@ It also sets a temporary password for the user that it pulls from a secrets file
 * The first task loads the secrets file.
   This retrieves our tmp_password.
 * The second task generates a RHEL compatibile password hash.
+  The no_log: true element ensures that even if an error occurs secrets will not be exposed.
 * The third task creates a group named "`auditteam`". 
   The `+state: present+` part means it will make sure the group exists.
 * ansible.builtin.group is the fully qualified name of the ansible `+module+` we are using to do the work.
@@ -99,7 +95,9 @@ It also sets a temporary password for the user that it pulls from a secrets file
 * `+loop: "{{ service_accounts }}"+`: This loops through the list of users in `+service_accounts+` and applies the task to each one.
 
 This playbook creates a group called "`auditteam`" and adds a user named "`johnp`" to that group with a temporary password.
-It’s like setting up a team and giving one person access to that team with a special password.
+This seems like a lot to create a group and a user.
+The important things are:
+
 
 === The Ansible Inventory File
 
@@ -169,7 +167,7 @@ It starts with a simple text file.
 
 [source,bash,run]
 ----
-echo 'tmp_password: "redhat" > vault.txt
+echo 'tmp_password: "redhat"' > vault.txt
 ----
 
 Let's encrypt the file now with ansible-vault.
@@ -202,6 +200,8 @@ ansible-vault decrypt vault.txt
 ----
 
 When you examine the file it should simply contain `+redhat+`
+
+**REMEMBER:** If you decrypted your file, **re-encrypt** it by running **ansible-vault encrypt** again!
 
 Now run can safely run the playbook without exposing the temporary password. Let's apply the ansible playbook to the localhost.
 

@@ -23,6 +23,7 @@ cat <<EOF > add-audit-user.yml
       ansible.builtin.command:
         cmd: mkpasswd "{{ tmp_password }}"
       register: pass_hash
+      no_log: true
 
     - name: Create group
       ansible.builtin.group:
@@ -35,12 +36,18 @@ cat <<EOF > add-audit-user.yml
         groups: "{{ group_name }}"
         append: true
         password: "{{ pass_hash.stdout }}"
-      with_items: "{{ service_accounts }}"
+      loop: "{{ service_accounts }}"
+      no_log: true
 
 EOF
 
 
 # This is placing a prewritten ansible inventory file in the default user directory
+cat >> /etc/ansible/ansible.cfg << EOF
+[defaults]
+deprecation_warnings=false
+EOF
+
 cat > hosts.ini << EOF
 localhost  ansible_connection=local
 EOF

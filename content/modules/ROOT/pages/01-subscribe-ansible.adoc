@@ -23,4 +23,4 @@ You can check to see what version of `+rhel-system-roles+` package are installed
 sudo dnf info  rhel-system-roles
 ----
 
-With our packages installed lets begin!
+With our packages installed, let's begin!

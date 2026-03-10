@@ -10,7 +10,7 @@ Our goals for this lab:
 * create users and groups securely
 * manage permissions and local sudo rules
 * modify SELinux permissions
-* configure system integrity with aide and system auditing with auditd
+* configure system integrity with aide
 * define an allow list of permitted applications using fapolicyd
 * define a basic security automation policy in a playbook
 

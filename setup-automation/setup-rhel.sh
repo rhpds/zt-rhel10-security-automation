@@ -110,6 +110,7 @@ cat >webdev.yml << EOF
             commands:
               - /usr/bin/systemctl start httpd
               - /usr/bin/systemctl stop httpd
+              - /usr/bin/systemctl restart httpd
               - /usr/bin/systemctl status httpd
   roles:
     - role: rhel-system-roles.sudo

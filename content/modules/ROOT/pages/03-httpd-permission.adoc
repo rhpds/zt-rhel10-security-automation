@@ -1,24 +1,39 @@
-== Background
+== Module 3: Configuring local sudo permissions
 
-In this lab, your manager Scott says there are is a web developer that
-is starting today.
+=== What you will learn
 
-His name is David J. and he will need a dedicated account, for awith
-special sudo permissions to start and stop the httpd service and the
-ability to host the website from his home directory.
+You can think of ansible roles as a prebuilt set of ansible tasks that are used to get to a specific goal.
+In this module, we introduce the first of our rhel-system-roles used for security.
 
-David’s account "`Davidj`" has been made, and he has created some of the
-needed files, but something is not working.
+You will use the sudo role to:
 
-Let’s start by switching user from root to '`davidj`' and the password
-"`redhat`" and test to see what permissions are working.
+* specify users and groups to apply sudo rules to
+* specify the host that the rules apply to
+* specify the interactions
+* specify the commands that can be executed under the rule
+* test your results
+
+=== Background
+
+In this lab, your manager Scott says there is a new web developer starting today.
+
+His name is David J. and he will need a dedicated account, with specific sudo permissions.
+As a developer, David J. needs to:
+
+* start, stop and restart the httpd service, and
+* be able to host the website from his home directory for testing.
+
+David’s account, "`davidj`", has already been made and some of the needed files have been created, but something is not working.
+
+Let’s start by switching user from root to '`davidj`' to test to see what permissions are working before providing David his temporary password.
+For our environment we know the temporary password for this new user is "`redhat`"
 
 [source,bash,run]
 ----
 su - davidj
 ----
 
-next we want to see what the status of httpd is
+Check to see if David has full access to see what the status of httpd is.
 
 [source,bash,run]
 ----
@@ -30,7 +45,7 @@ sudo systemctl status httpd
 redhat
 ----
 
-Now lets see if he has permission to change the status service,
+Hmmm... Does David have permission to change the status of the service?
 
 [source,bash,run]
 ----
@@ -42,18 +57,17 @@ sudo systemctl start httpd
 redhat
 ----
 
-So the account doesn;’t currently have the access to spin up and spin
-down the httpd service. To help change that we are going to use the new
-Sudo System-Role.
+So David's account doesn’t have the access to see all details of the service status, or to spin up and spin down the httpd service. 
+To help change that we are going to use the sudo System-Role.
 
-Now lets close out of the davidj user and go back to our root user.
+Log out of the davidj user and go back to our root user.
 
 [source,bash,run]
 ----
 exit
 ----
 
-== Ansible Playbook Explanation
+=== Ansible Playbook Explanation
 
 Now we will run create the sudo rule to add him to the sudoers to run a
 couple of commands using the sudo system rules.
@@ -63,29 +77,22 @@ couple of commands using the sudo system rules.
 cat webdev.yml
 ----
 
-== Ansible Playbook Explanation
-
-=== What is Ansible?
-
-Ansible is like a set of instructions that a computer can follow to do
-tasks automatically. It’s used to manage and configure servers.
 
 === What Does This Playbook Do?
 
 ==== Hosts: localhost
 
-This means the playbook will run on the same computer where it is
-executed. Think of it as telling the computer to do something to itself.
+This means the playbook will run on the same computer where it is executed.
+Think of it as telling the computer to do something to itself.
 
 ==== Vars: (Variables)
 
-These are like settings or options that the playbook uses. In this case,
-it’s setting up some rules for a special file called `+sudoers+`.
+These are like settings or options that the playbook uses.
+In this case, it’s setting up some rules for a special file called `+sudoers+`.
 
 ==== sudo_sudoers_files:
 
-This is a list of files that will be created or modified to give certain
-users special permissions.
+This is a list of files that will be created or modified to give certain users special permissions.
 
 * *path: /etc/sudoers.d/webdev*
 ** This is the location where the file will be created.
@@ -94,8 +101,8 @@ users special permissions.
 ** *users:*
 *** *davidj*
 *** *%webdev*
-**** These are the users who will get special permissions. `+%webdev+`
-means any user who is part of the `+webdev+` group.
+**** These are the users who will get special permissions.
+     `+%webdev+` means any user who is part of the `+webdev+` group.
 ** *hosts: ALL*
 *** This means these permissions apply to all computers.
 ** *operators: ALL*
@@ -103,49 +110,40 @@ means any user who is part of the `+webdev+` group.
 ** *commands:*
 *** */usr/bin/systemctl start httpd*
 *** */usr/bin/systemctl stop httpd*
+*** */usr/bin/systemctl restart httpd*
 *** */usr/bin/systemctl status httpd*
-**** These are the specific commands that the users can run. They are
-commands to start, stop, and check the status of a web server called
-`+httpd+`.
+**** These are the specific commands that the users can run. They are commands to start, stop, restart, and check the status of a web service `+httpd+`.
 
 ==== Roles:
 
 This is like a pre-made set of instructions that Ansible can use.
 
 * *role: rhel-system-roles.sudo*
-** This role is specifically for managing `+sudo+` permissions on Red
-Hat Enterprise Linux (RHEL) systems.
+** This role is specifically for managing `+sudo+` permissions on Red Hat Enterprise Linux (RHEL) systems.
 
 === What Happens When This Playbook Runs?
 
 * The playbook will create a file at `+/etc/sudoers.d/webdev+`.
-* This file will give the user `+davidj+` and any user in the `+webdev+`
-group the ability to run specific commands related to the `+httpd+` web
-server on any computer.
-* The commands they can run are to start, stop, and check the status of
-the `+httpd+` web server.
+* This file will give the user `+davidj+` and any user in the `+webdev+` group the ability to run specific commands related to the `+httpd+` service on any computer.
+* The commands they can run are to start, stop, and check the status of the `+httpd+` service.
 
-So, in simple terms, this playbook sets up special permissions for
-certain users to control a web server on their computer.
+So, in simple terms, this playbook sets up special permissions for certain users to control a web server on their computer.
 
-Now run the playbook again to apply the system roles to the clients
-group.
+Run the playbook again to apply the system roles to the local host.
 
 [source,bash,run]
 ----
 ansible-playbook -i hosts.ini  webdev.yml
 ----
 
-Lets log back into David’s account
+Let's log back into David’s account
 
 [source,bash,run]
 ----
 su - davidj
 ----
 
-next we want to see what the status of httpd is
-
-Now lets see if he has permission to change the status service,
+See if David's account has permission to change the status service.
 
 [source,bash,run]
 ----
@@ -159,11 +157,20 @@ Use this as davidj’s password.
 redhat
 ----
 
-Once we have started the service, lets make sure it’s running.
+Is the service running? Let's get the status/
 
 [source,bash,run]
 ----
 sudo systemctl status httpd
 ----
 
-This will Fail, and that is ok, we will fix it the next section.
+Our sudo commands are working, however, the httpd service is in a FAILED state.
+
+In this module we discovered:
+
+* ansible-roles and the first of our rhel-system-roles
+* how to define variables for a role
+* used the sudo role to apply our configuration to our target system
+* how roles allow you to perform complex management task with very little code!
+
+However, there are still some errors. Let's fix them in the next section.

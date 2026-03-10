@@ -1,16 +1,26 @@
-Red Hat Enterprise Linux System Roles are a collection of supported
-Ansible roles that ensure consistent workflows and streamline the
-execution of manual tasks.
+== Welcome to the RHEL 10 Security Automation Lab
+
+=== Module 1: Introduction
+
+Red Hat Enterprise Linux System Roles are a collection of supported Ansible roles that ensure consistent workflows and streamline the execution of manual tasks.
+
+Our goals for this lab:
+
+* quickly cover the ansible basics
+* create users and groups securely
+* manage permissions and local sudo rules
+* modify SELinux permissions
+* configure system integrity with aide and system auditing with auditd
+* define an allow list of permitted applications using fapolicyd
+* define a basic security automation policy in a playbook
 
 We have already installed "`rhel-system-roles`" for this lab.
 
-You can check to see what version of `+rhel-system-roles+` package are
-installed with the command below. Copy and paste the command below into
-*> Shell*.
+You can check to see what version of `+rhel-system-roles+` package are installed with the command below. Copy and paste the command below into *> Shell*.
 
 [source,bash,run]
 ----
 sudo dnf info  rhel-system-roles
 ----
 
-With our packages installed lets head to the next step.
+With our packages installed lets begin!

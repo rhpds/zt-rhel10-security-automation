@@ -170,7 +170,7 @@ In this module we discovered:
 
 * ansible-roles and the first of our rhel-system-roles
 * how to define variables for a role
-* used the sudo role to apply our configuration to our target system
+* the sudo role and how to apply our configuration to our target system
 * how roles allow you to perform complex management task with very little code!
 
 However, there are still some errors. Let's fix them in the next section.

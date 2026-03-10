@@ -60,9 +60,10 @@ We have a playbook we can use.
 cat selinux.yml
 ----
 
-=== Ansible Playbook Explanation
+=== What does this playbook do?
 
 The playbook file is selinux.yml
+The goal of the playbook is to ensure the correct SELinux policy on David's environment.
 
 ==== Hosts 
 

@@ -16,7 +16,7 @@ cat bsa.yml
 
 === What Does This Playbook Do?
 
-==== Overview
+==== Hosts
 
 * *Name*: The playbook is named "`Example Basic Security Automation (BSA) system roles.`"
 * *Hosts*: It will run on all the computers (hosts) that Ansible is managing.

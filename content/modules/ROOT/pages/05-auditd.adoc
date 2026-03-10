@@ -23,7 +23,7 @@ Lets look at the playbook for AIDE.
 cat aide.yml
 ----
 
-==== Overview
+==== Hosts
 
 This Ansible playbook is named "`Example aide role invocation.`" 
 The playbook will run on all computers referenced for the play.
@@ -44,8 +44,8 @@ Using the method below, we are scoping the variables to the include_role task.
 ** `+aide_install: true+`: Tells the role to install the AIDE software.
 ** `+aide_generate_config: true+`: Tells the role to generate a configuration file for AIDE.
 ** `+aide_init: true+`: Tells the role to initialize the AIDE database.
-** `+aide_check: false+`: Tells the role not to check the integrity of the files.
-** `+aide_update: false+`: Tells the role not to update the AIDE database.
+** `+aide_check: false+`: Tells the role not to check the integrity of the files at configuration time.
+** `+aide_update: false+`: Tells the role not to update the AIDE database, because we aren't checking.
 * *Module*: `+ansible.builtin.include_role+`
 * *Role Name*: `+rhel-system-roles.aide+`
 

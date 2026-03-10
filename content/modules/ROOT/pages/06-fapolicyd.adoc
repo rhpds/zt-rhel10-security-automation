@@ -12,7 +12,7 @@ We will:
 * configure trusted sources 
 * configure specific trusted files
 
-=== Ansible Playbook Explanation
+=== What does this playbook do?
 
 Now lets look at a basic Fapolicyd playbook, where we want to install and enable the service to run.
 
@@ -20,8 +20,6 @@ Now lets look at a basic Fapolicyd playbook, where we want to install and enable
 ----
 cat fapolicyd.yml
 ----
-
-==== Overview
 
 The playbook is named "`Fapolicyd role invocation.`" 
 This becomes a logging identifier to help you track what the playbook has been executed.
@@ -40,7 +38,7 @@ Here are the variables:
 * `+fapolicyd_add_trusted_file+`: This is a list of files that the playbook should trust. In this case, it includes `+/etc/passwd+`,
 `+/etc/fapolicyd/fapolicyd.conf+`, and `+/etc/krb5.conf+`.
 
-=== Roles
+==== Roles
 
 The playbook applies the role called `+rhel-system-roles.fapolicyd+` to hosts using the provided variables.
 This role is specifically for setting up and managing the `+fapolicyd+` service.

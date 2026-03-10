@@ -14,6 +14,16 @@ cat <<EOF > add-audit-user.yml
 
   tasks:
 
+    - name: "Load the vault variables"
+      when: vault_path is defined
+      ansible.builtin.include_vars:
+        file: "{{ vault_path }}"
+
+    - name: Create the password hash
+      ansible.builtin.command:
+        cmd: mkpasswd "{{ tmp_password }}"
+      register: pass_hash
+
     - name: Create group
       ansible.builtin.group:
         name: "{{ group_name }}"
@@ -24,8 +34,9 @@ cat <<EOF > add-audit-user.yml
         name: "{{ item.name }}"
         groups: "{{ group_name }}"
         append: true
-#        password: "{{ tmp_password }}"
+        password: "{{ pass_hash.stdout }}"
       with_items: "{{ service_accounts }}"
+
 EOF
 
 

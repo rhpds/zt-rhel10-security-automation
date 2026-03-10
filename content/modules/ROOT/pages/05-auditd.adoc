@@ -1,4 +1,20 @@
-== Ansible Playbook Explanation
+== Module 5: Monitoring system integrity with AIDE
+
+=== What you will learn
+
+In this module we will implement the advanced intrusion detection environment.
+
+AIDE provided for host-based intrusion detection by baselining and monitoring for changes in the files on a system.
+We will:
+
+* configure AIDE using the rhel_system_roles collection
+* install the AIDE packages
+* configure AIDE services
+* initialize the AIDE database
+* generate the configuration file
+* test AIDE by scanning a system for changes
+
+=== What does this playbook do?
 
 Lets look at the playbook for AIDE.
 
@@ -7,65 +23,61 @@ Lets look at the playbook for AIDE.
 cat aide.yml
 ----
 
-=== Playbook Overview
+==== Hosts
 
-This Ansible playbook is named "`Example aide role invocation.`" It is
-designed to run on a group of computers called. The playbook includes a
-role called `+rhel-system-roles.aide+` and sets several variables to
-control its behavior.
+This Ansible playbook is named "`Example aide role invocation.`" 
+The playbook will run on all computers referenced for the play.
+The playbook includes a role called `+rhel_system_roles.aide+` and sets several variables to control its behavior.
 
-=== Tasks
+==== Tasks
 
-The playbook has one main task:
+As seen when applying other roles, this playbook has a single task.
+In this example, we examine an alternate way of defining variables.
+Using the method below, we are scoping the variables to the include_role task.
 
 [arabic]
-. *Include Role*:
+*Include Role*
+
 * *Name*: Include role aide
 * *Variables*:
-** `+aide_db_fetch_dir: files+`: Tells the role to fetch the database
-files.
+** `+aide_db_fetch_dir: files+`: Tells the role to fetch the database files.
 ** `+aide_install: true+`: Tells the role to install the AIDE software.
-** `+aide_generate_config: true+`: Tells the role to generate a
-configuration file for AIDE.
+** `+aide_generate_config: true+`: Tells the role to generate a configuration file for AIDE.
 ** `+aide_init: true+`: Tells the role to initialize the AIDE database.
-** `+aide_check: false+`: Tells the role not to check the integrity of
-the files.
-** `+aide_update: false+`: Tells the role not to update the AIDE
-database.
+** `+aide_check: false+`: Tells the role not to check the integrity of the files at configuration time.
+** `+aide_update: false+`: Tells the role not to update the AIDE database, because we aren't checking.
 * *Module*: `+ansible.builtin.include_role+`
 * *Role Name*: `+rhel-system-roles.aide+`
 
-=== What Does It Do?
+==== What happens when you run this playbook?
 
-In simple terms, this playbook tells Ansible to go to a group of
-computers called "`targets`" and run a set of instructions to install
-and set up the AIDE software. AIDE is a tool that helps keep track of
-changes to files on your computer, which can be useful for security and
-monitoring purposes.
+In simple terms, this playbook tells Ansible to go to all of the computers passed from the inventory and run a set of instructions to install and set up the AIDE software. 
+The RHEL system role for AIDE can also be used to add or remove periodic scanning by configuring cron and set the frequency of the cron job.
 
-=== Lets Run It!
+==== Run the playbook
+
+Create the AIDE configuration, initialize the database and create the baseling by executing the playbook.
 
 [source,bash,run]
 ----
 ansible-playbook -i hosts.ini aide.yml
 ----
 
-Ok now that we have a baseline, we can check to see what the aide log
-looks like.
+Ok now that we have a baseline, we can check to see what the aide log looks like.
 
 [source,bash,run]
 ----
 sudo cat /var/log/aide/aide.log
 ----
 
-Now lets install a new program.
+What happens when we install a new program?
 
 [source,bash,run]
 ----
 sudo yum install -y nano
 ----
 
-Now lets see what aide tracked
+Have aide scan the system to discover the new software.
 
 [source,bash,run]
 ----
@@ -73,3 +85,16 @@ sudo aide --check
 ----
 
 This will take 45 to 90 seconds to scan.
+AIDE scans will detect if a files are added or changed.
+This can help us determine if an installed file has been modified from that one that the rpm package provided. 
+Changes in package sourced files may indicate that an attacker is trying to embed their own commands known software in order to compromise the system.
+
+The scan results will indicate the many file have been added to the system. This type of log can be analyzed by log systems to take appropriate action, including notifications, isolation and remediation.
+
+
+In this module you have seen how to:
+
+* install and configure AIDE with ansible
+* can use rhel_system_roles to monitor system integrity. 
+
+In our next section we will examine fapolicyd.

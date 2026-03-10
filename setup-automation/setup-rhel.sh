@@ -14,6 +14,17 @@ cat <<EOF > add-audit-user.yml
 
   tasks:
 
+    - name: "Load the vault variables"
+      when: vault_path is defined
+      ansible.builtin.include_vars:
+        file: "{{ vault_path }}"
+
+    - name: Create the password hash
+      ansible.builtin.command:
+        cmd: mkpasswd "{{ tmp_password }}"
+      register: pass_hash
+      no_log: true
+
     - name: Create group
       ansible.builtin.group:
         name: "{{ group_name }}"
@@ -24,12 +35,19 @@ cat <<EOF > add-audit-user.yml
         name: "{{ item.name }}"
         groups: "{{ group_name }}"
         append: true
-#        password: "{{ tmp_password }}"
-      with_items: "{{ service_accounts }}"
+        password: "{{ pass_hash.stdout }}"
+      loop: "{{ service_accounts }}"
+      no_log: true
+
 EOF
 
 
 # This is placing a prewritten ansible inventory file in the default user directory
+cat >> /etc/ansible/ansible.cfg << EOF
+[defaults]
+deprecation_warnings=false
+EOF
+
 cat > hosts.ini << EOF
 localhost  ansible_connection=local
 EOF
@@ -92,6 +110,7 @@ cat >webdev.yml << EOF
             commands:
               - /usr/bin/systemctl start httpd
               - /usr/bin/systemctl stop httpd
+              - /usr/bin/systemctl restart httpd
               - /usr/bin/systemctl status httpd
   roles:
     - role: rhel-system-roles.sudo

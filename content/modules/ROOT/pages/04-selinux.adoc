@@ -1,11 +1,21 @@
-== Background
+== Module 4: Managing SELinux permissions
 
-David the web developer has asked to have his website files be located
-in his home folder instead of the default apache location.
+=== What we will learn
 
-He says he set the correct permissions, but is getting an error.
+In this module, we introduce the second of our rhel-system-roles used for security.
 
-To do this we will need to make sure the selinux rules are in place.
+You will use the selinux role to:
+
+* define allowed ports to be accessed under selinux
+* define locations where web pages can be served from by a service
+
+=== Background
+
+David the web developer needs to have his website files be located in his home folder instead of the default apache location to properly manage his work.
+
+We have tested his account and the correct permissions seem to be there, but we still can't access the site.
+
+To fix this we will need to make sure the selinux rules are in place.
 
 Lets check to see the permissions on his directory
 
@@ -14,133 +24,96 @@ Lets check to see the permissions on his directory
 ls -lh /home/davidj/public_html
 ----
 
-Lets see if we can see the working webserver
+David owns the files, but others should be able to read them.
+Lets see if we can access the web site.
 
 [source,bash,run]
 ----
 curl http://localhost:1337
 ----
 
-Next lets make sure we have the selinux context set on the file. you can
-do this in a couple of different ways.
+Next lets make sure we have the selinux context set on the file.
 
 [source,bash,run]
 ----
 ls -Z /home/davidj/public_html
 ----
 
-Lets exit david's account
+The context seems to be correct.
+----
+unconfined_u:object_r:httpd_sys_content_t:s0 
+----
+
+Lets exit david's account and try to remediate this.
 
 [source,bash,run]
 ----
 exit
 ----
 
-So lets have our SELinux system role set the permissions to allow port
-1337 and make sure the right selinux file context is on the files. We
-have a playbook we can use.
+David needs to access the web service on an uncommon port 1337.
+We will use the SELinux system role set the permissions to allow port 1337 and make sure the right selinux file context is on the files.
+We have a playbook we can use.
 
 [source,bash,run]
 ----
 cat selinux.yml
 ----
 
+=== What does this playbook do?
 
+The playbook file is selinux.yml
+The goal of the playbook is to ensure the correct SELinux policy on David's environment.
 
+==== Hosts 
 
-== Ansible Playbook Explanation
-
-=== What is an Ansible Playbook?
-
-An Ansible playbook is like a recipe book for a computer. It tells the
-computer what tasks to do to set up or configure a system.
-
-=== What Does This Playbook Do?
-
-==== Title and Targets
-
-* *Name*: The playbook is named "`Example Basic Security Automation
-(BSA) system roles.`"
-* *Hosts*: It will run on all the computers (hosts) that Ansible is
-managing.
+* localhost - it is targeted at the local computer
 
 ==== Variables
 
-* *sudo_rules*: This tells the computer which users can run certain
-commands without needing a password. In this case, the user "`audit-sa`"
-can run the command `+/usr/sbin/aide+` without a password.
-* *selinux_ports*: This sets up rules for SELinux (a security system) to
-allow traffic on port 1337 using the TCP protocol.
-* *selinux_fcontexts*: This sets up file context rules for SELinux. It
-says that the directory `+/home/davidj/public_html+` should have the
-type `+httpd_sys_content_t+`.
-* *aide_db_fetch_dir*: This tells where to fetch the AIDE (Advanced
-Intrusion Detection Environment) database from.
-* *aide_install, aide_generate_config, aide_init, aide_check,
-aide_update*: These are settings for AIDE. It tells the computer to
-install AIDE, generate its configuration, initialize it, but not to
-check or update it.
-* *fapolicyd_setup_enable_service, fapolicyd_setup_integrity,
-fapolicyd_setup_trust, fapolicyd_add_trusted_file*: These are settings
-for `+fapolicyd+`, a file access policy daemon. It tells the computer to
-enable the service, use SHA256 for integrity checks, trust certain
-files, and add specific files to the trusted list.
+* *selinux_ports*: This sets up rules for SELinux (a security system) to allow traffic on port 1337 using the TCP protocol.
+* *selinux_fcontexts*: This sets up file context rules for SELinux. It says that the directory `+/home/davidj/public_html+` should have the type `+httpd_sys_content_t+`.
 
 ==== Roles
 
-* *rhel-system-roles.sudo*: This role sets up sudo rules.
 * *rhel-system-roles.selinux*: This role sets up SELinux rules.
-* *rhel-system-roles.aide*: This role sets up AIDE for file integrity
-checking.
-* *rhel-system-roles.fapolicyd*: This role sets up `+fapolicyd+` for
-file access policies.
 
-=== What Does It All Mean?
-
-* *Security*: This playbook is all about making the computer more
-secure.
-* *Permissions*: It sets up who can do what without needing a password.
-* *File Access*: It controls which files can be accessed and how.
-* *File Integrity*: It checks if files have been changed unexpectedly.
-* *Network Security*: It controls which network ports can be used.
-
-In simple terms, this playbook is like a set of instructions to make a
-computer more secure by controlling who can do what, which files can be
-accessed, and which network ports can be used. It uses different tools
-and settings to achieve this.
-
-Now lets run it with ansible
+Run the playbook.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts selinux.yml
+ansible-playbook -i hosts.ini selinux.yml
 ----
 
-Since we have made changes to the http service, we need to do is to
-restart the http service
+Since we have made changes to the http service, we need to do is to restart the http service
 
 [source,bash,run]
 ----
 systemctl restart httpd
 ----
 
-Now that ansible has made changes lets see if we can access the site
+Now that ansible has made changes let's see if we can access the site
 
 [source,bash,run]
 ----
 curl http://localhost:1337
 ----
 
-Next we can take a look at the permissions
+Awesome, we now see the index page returned.
+Next, take a look at the permissions.
 
 [source,bash,run]
 ----
-ls -lh /home/davidj/public_html
+semanage port -l | grep 1337
 ----
+
+David's port is listed as allowed for serving web services.
 
 [source,bash,run]
 ----
 ls -Z /home/davidj/public_html
 ----
+
+The web pages folder in David's home has the proper SELinux context do allow serving web pages.
 
 We can now move on to the next section.

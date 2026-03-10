@@ -11,7 +11,6 @@ cat <<EOF > add-audit-user.yml
     - group_name: "auditteam"
     - service_accounts:
       - name: "johnp"
-    # we will get tmp_password from a vault file
 
   tasks:
     - name: "Load the vault variables"

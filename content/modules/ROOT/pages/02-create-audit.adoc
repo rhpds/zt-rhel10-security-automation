@@ -1,41 +1,57 @@
-== Background
+== Module 1: Create an Audit Team user
+=== What you will learn in this lab
 
-In this lab, your manager Scott says there are is a new auditor that is
-coming in to check the systems for compliance.
+The goals of this lab are to introduce you to the basic concepts of running ansible automation.
 
-His name is John P. and he will need a dedicated account, for auditing
-purposes.
+In this section we will do the following exercises:
 
-Today we wil use Ansible to automate the tasks we want to acomplish.
+* run a predefined **playbook** against a local machine and a remote machine.
+* provide a list of hosts that we want to automate by managing the ansible **inventory file**.
+* **filter** that list of hosts that we execute our ansible playbooks against by using the **--limit argument**.
+* provide **extra variables** to our ansible playbook by specifying them at the command line or loading them from a file.
+* create **secrets** for sensitive data, store them in an **encrypted file** file and then access them at execution time.
 
-Ansible comes as part of your RHEL subscription, so lets learn to
-utilize the tool!
+=== Background
 
-== What is Ansible?
+In this lab your manager Scott says that there is a new auditor that is coming in to check the Red Hat Enterprise Linux (RHEL) systems for compliance.
+His name is John P. and he will need a dedicated account, for auditing purposes.
 
-Ansible is a tool used to automate tasks on computers. Imagine you have
-a bunch of computers, and you want to make sure they all have the same
-software installed, or you want to create new user accounts on all of
-them. Instead of doing each task manually on every computer, you can use
-Ansible to do it all at once.
+Today we will use Ansible to automate the tasks we want to accomplish.
 
-== What is an Ansible Playbook?
+Ansible core comes with RHEL at no additional cost as part of your subscription. 
+Let's learn to utilize Ansible for automating system security!
 
-An Ansible playbook is like a recipe that tells a computer what to do.
-It’s used to automate tasks, like setting up a new user or installing
-software.
+=== Aside: What is Ansible?
 
-We will be using a pre-written ansible playbook to add a new group and
-user. 
+If you are new to Ansible, here is a very brief overview.
 
-This is stored in the home for the rhel user, so we will change our working directory to work from there.
+Ansible is a tool used to automate tasks on computers.
+Imagine you have a bunch of computers, and you want to make sure that they all have the same software installed, or you want to create new user accounts on all of them. 
+Instead of doing each task manually on every computer and risking errors on some, you can use Ansible and test your changes on one machine and then confidently apply the changes to all computers at once.
+
+It is really a tool, a language, and a famework.
+Ansible is the term for the YAML based language that we use to write ansible automation.
+Ansible the tool runs your ansible automation code to perform tasks.
+Ansible is also a framework that you can extend.
+You can write your own Modules and group them into collections so that others in your organisation can leverage them.
+
+An Ansible playbook is named after a sports play book.
+The variables can be thought of as the ball or puck.
+The modules are the players.
+The tasks are the steps they need to take with the variables to score a goal.
+
+The playbook is used to automate tasks, like setting up a new user or installing software.
+
+
+In our exercise, we will be using a pre-written ansible playbook to add a new group and user. 
+This is stored in the home directory for the rhel user, so we will change our working directory to work from there.
 
 [source,bash,run]
 ----
 cd /home/rhel
 ----
 
-Now let's take a look at the playbook called add-audit-user.yml
+Let's look at the first playbook called add-audit-user.yml
 
 [source,bash,run]
 ----
@@ -44,120 +60,206 @@ cat  add-audit-user.yml
 
 === What Does This Playbook Do?
 
-This playbook is designed to create a group called "`auditteam`" and add
-a user named "`johnp`" to that group. It also sets a temporary password
-for the user.
+This playbook is designed to create a group called "`auditteam`" and add a user named "`johnp`" to that group.
+It also sets a temporary password for the user that it pulls from a secrets file.
 
 === Step-by-Step Explanation
 
 [arabic]
 . *Header Information*:
-* `+name+`: This is the name of the playbook. It’s like giving your
-recipe a title.
-* `+hosts: all+`: This means the playbook will run on all the computers
-(hosts) it is told to manage.
-* `+gather_facts: yes+`: This tells Ansible to collect information about
-the computers it’s managing.
-* `+become: true+`: This means the playbook will run with special
-permissions, like an admin.
+* `+name+`: This is the name of the playbook. It’s like giving your recipe a title.
+* `+hosts: all+`: This means the playbook will run on all the computers (hosts) it is told to manage.
+* `+gather_facts: yes+`: This tells Ansible to collect information about the computers it’s managing.
+* `+become: true+`: This means the playbook will run with special permissions, like an admin.
+
 . *Variables*:
-* `+group_name+`: This is the name of the group we want to create, which
-is "`auditteam`".
-* `+tmp_password+`: This is a temporary password for the user. It’s a
-bit complicated because it’s encrypted.
-* `+service_accounts+`: This is a list of users we want to add to the
-group. In this case, there’s only one user, "`johnp`".
+* `+group_name+`: This is the name of the group we want to create, which is "`auditteam`".
+* `+tmp_password+`: This variable is not explicitly listed in the group of variables in the playbook file. 
+   That would be bad practice.
+   We will get the tmp_password as from a secrets file and load it into the playbook when we run it. 
+   You will see it below in the task.
+* `+service_accounts+`: This is a list of users we want to add to the group.
+   In this case, there’s only one user, "`johnp`".
+
 . *Tasks*:
-* This task creates a group named "`auditteam`". The `+state: present+`
-part means it will make sure the group exists.
-* This task adds the user "`johnp`" to the "`auditteam`" group.
-* `+name: "{{ item.name }}"+`: This means the name of the user will be
-taken from the `+service_accounts+` list.
-* `+groups: "{{ group_name }}"+`: This adds the user to the
-"`auditteam`" group.
-* `+append: true+`: This means if the user is already in other groups,
-they will stay in those groups too.
-* `+password: "{{ tmp_password }}"+`: This sets the temporary password
-for the user.
-* `+with_items: "{{ service_accounts }}"+`: This loops through the list
-of users in `+service_accounts+` and applies the task to each one.
+* The first task loads the secrets file.
+  This retrieves our tmp_password.
+* The second task generates a RHEL compatibile password hash.
+* The third task creates a group named "`auditteam`". 
+  The `+state: present+` part means it will make sure the group exists.
+* ansible.builtin.group is the fully qualified name of the ansible `+module+` we are using to do the work.
+  * `+ansible+` is the namespace.
+  * `+builtin+`` is the collection.
+  * `+group+` is the module.
+* The last task adds the user "`johnp`" to the "`auditteam`" group and assigns the temporary password.
+* `+name: "{{ item.name }}"+`: This means the name of the user will be taken from the `+service_accounts+` list.
+* `+groups: "{{ group_name }}"+`: This adds the user to the "`auditteam`" group.
+* `+append: true+`: This means if the user is already in other groups, they will stay in those groups too.
+* `+password: "{{ tmp_password }}"+`: This sets the temporary password for the user. The value is expected to be a password hash. 
+* `+loop: "{{ service_accounts }}"+`: This loops through the list of users in `+service_accounts+` and applies the task to each one.
 
-=== Playbook Summary
+This playbook creates a group called "`auditteam`" and adds a user named "`johnp`" to that group with a temporary password.
+It’s like setting up a team and giving one person access to that team with a special password.
 
-This playbook creates a group called "`auditteam`" and adds a user named
-"`johnp`" to that group with a temporary password. It’s like setting up
-a team and giving one person access to that team with a special
-password.
+=== The Ansible Inventory File
 
-== Ansible Inventory File
+There is another component of running the ansible automation play that we need to look at called the inventory file.
 
-There is another componet of running the anisble automation that we need
-to look at called the inventory file.
+An Ansible inventory file is like a list of all the computers (or hosts) that you want to manage with Ansible.
+It's primary purpose is to define the available systems and the ways that you can group them for plays.
+It can also define how you connect to each system and other group or host specific variables.
+This is important because you often want to run the same tasks on multiple computers, but not all systems have the same attributes.
+The inventory file helps you organize and manage your computers efficiently.
 
-An Ansible inventory file is like a list of all the computers (or hosts)
-that you want to manage with Ansible. It tells Ansible which servers to
-connect to and how to group them. This is important because you often
-want to run the same tasks on multiple computers, and the inventory file
-helps you organize and manage those computers efficiently.
-
-Lets take a look at this one.
+Ours is very simple. Let's take a look at it.
 
 [source,bash,run]
 ----
 cat  hosts.ini
 ----
 
-=== What is an Ansible Inventory File?
-
-An Ansible inventory file is like a list of computers that you want to
-manage with Ansible. It tells Ansible which computers to connect to and
-how to connect to them.
-
-=== What Does this Line Mean?
-
-The line you provided is:
+This is the content of the file.
 
 [source,ini]
 ----
 localhost  ansible_connection=local
 ----
 
-Let’s break it down:
+In this example, there are only two components to the line.
 
 [arabic]
 . *localhost*:
-* This is the name of the computer. `+localhost+` is a special name that
-means "`this computer.`" So, it’s telling Ansible to manage the computer
-it’s running on.
+* the name of the computer. 
+  By specifying `+localhost+` we are telling ansible that the local machine is a valid inventory member.
+  We can execute playbooks against the local machine.
 . *ansible_connection=local*:
-* This part tells Ansible how to connect to the computer. `+local+`
-means that Ansible should run the tasks directly on the same computer
-where Ansible is running, without using a network connection.
+* This part tells Ansible how to connect to the computer. 
+`+local+` means that Ansible should run the tasks directly on the same computer where Ansible is running, without using a network connection.
 
-=== Why Use This Line?
+=== Why would we specify connection=local?
 
-This line is useful when you want to test your Ansible playbooks on your
-own computer before running them on other computers. It’s like
-practicing your recipe on your own kitchen before cooking for a big
-party.
+This line is useful when you want to test your Ansible playbooks on your own computer before running them on other computers.
+This eliminates connectivity issues as a source of problems when debugging your ansible.
+We only have to concentrate on the changes we are making.
+It’s like practicing your recipe in your own kitchen before cooking for a big party.
+This helps you make sure everything works correctly before you use it on a bigger scale.
 
-By using this inventory file, you can test your Ansible playbooks on
-your own computer before running them on other computers. This helps you
-make sure everything works correctly before you use it on a bigger
-scale.
 
-Now run the playbook to apply the system roles to the localhost.
+=== How do we pass information to the playbook?
+
+Many times, all the data we need isn't in the playbook, or we want to override it.
+In our case, the temporary password isn't supplied in the file and needs to be given to the playbook.
+We don't want to provide it as part of the playbook file, we don't want it to be clear text on the command line.
+It needs to be a secret. 
+What do we do? 
+
+Well, Ansible provides a several of ways. 
+One way is to have ansible ask us at runtime for the plaintext password as a hidden field. 
+This allows us to give the playbook additional configuration information to complete its tasks without storing it in the playbook or showing in our history.
+
+There is a better way though. 
+We use an encrypted file to keep the value secret.
+These are called vault files.
+Ansible provides a the ansible-vault executable to perform the encyption and decryption.
+ansible-vault can be called automatically by ansible when it discovers an encrypted vault file.
+
+Let's use the temporary password value `+redhat+`.
+We will store it in a vault file.
+It starts with a simple text file.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini add-audit-user.yml
+echo 'tmp_password: "redhat" > vault.txt
 ----
+
+Let's encrypt the file now with ansible-vault.
+Running it prompts us for a password and to verify the password.
+The same passord is required to decrypt.
+We can encrypt the file simply by calling the tool like this:
+
+[source,bash,run]
+----
+ansible-vault encrypt vault.txt
+----
+Provide a simple password of your choice for this exercise.
+
+Now, use cat to look at the file content.
+
+-----
+cat vault.txt
+$ANSIBLE_VAULT;1.1;AES256
+66643230333235646439373033366235616165316130643636393937626537626434353438326438
+6331636432646661363631633537303064636563343962330a363366643866326235343039396663
+61353136313330343031646533313461616130323435306462356265353564396663316233613632
+6233333739643235360a666562363466663239363564386330623335656363303863306564643339
+3461
+-----
+
+If you want to validate your password, you can decrypt the file again with:
+[source,bash,run]
+----
+ansible-vault decrypt vault.txt
+----
+
+When you examine the file it should simply contain `+redhat+`
+
+Now run can safely run the playbook without exposing the temporary password. Let's apply the ansible playbook to the localhost.
+
+Specify the inventory with `--inventory` or `-i` to be brief.
+
+We have allowed the playbook to load additional variables by reading a filename passed as a variable.
+To do this, use the commandline parameter `+--extra-vars+` or `+-e+` for short.
+This is how you will specify the vault file.
+Ansible will automatically detect that it is encrypted.
+
+To specify the vault password so that ansible can read the encrypted data from vault.txt, you will add `+--ask-vault-password+`.
+When you run the playbook, you will be prompted for the vault password. 
+
+OK, pulling it all together we run:
+
+[source,bash,run]
+----
+ansible-playbook --inventory hosts.ini --extra-vars "vault_path=vault.txt" --ask-vault-password add-audit-user.yml
+----
+
+Your results should look something like this:
+----
+[root@rhel rhel]# ansible-playbook -i hosts.ini --extra-vars "vault_path=vault.txt" --ask-vault-password add-audit-user.yml 
+Vault password: 
+
+PLAY [Config audit team group and members]
+
+TASK [Gathering Facts]
+ok: [localhost]
+
+TASK [Load the vault variables]
+ok: [localhost]
+
+TASK [Create the password hash]
+changed: [localhost]
+
+TASK [Create group]
+ok: [localhost]
+
+TASK [Add the Audit user to the "auditteam" User group]
+changed: [localhost] => (item={'name': 'johnp'})
+
+PLAY RECAP **************************************************************************************
+localhost : ok=6    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
+----
+
+See if you can test the login for johnp.
+Hint `+su - rhel+` will put you into a non-privileged account.
+This will allow the system to prompt you for a password when you try to impersonate johnp.
+
+
+You have proven that your automation runs as intended. Now to run it against a remote host.
 
 === Expanding your Automation
 
-Edit the `+bsa.yml+` playbook to add the `+clients+` host group. This
-tells ansible to apply the system roles in `+bsa.yml+` to `+localhost+`
-and `+client1+`.
+Edit the `+hosts.ini+` file to add the `+clients+` group.
+This tells ansible that you now have your 'productions' systems available as targets to execute playbooks against.
+Remember, you can use this same inventory file as the list of hosts for any playbook.
 
 [source,bash,run]
 ----
@@ -168,14 +270,31 @@ client1
 EOF
 ----
 
-The `+hosts.ini+` should contain the following.
+The `+hosts.ini+` should contain the `+clients+` group.
 
-Now run the playbook to apply the system roles to the clients group.
+Run the playbook to apply our changes to the clients group. 
+By specifying the `+--limits+` parameter, we can have ansible only target our clients group.
+The limit can specify a group or individual host in the inventory file.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini add-audit-user.yml
+ansible-playbook -i hosts.ini --limit clients --extra-vars "vault_path=vault.txt" --ask-vault-password add-audit-user.yml
 ----
 
-Awesome, now that we have run the playbook on all the machines, lets
-move to the next step.
+You can test the client1 system in the same way that you tested the local system.
+
+* SSH to the client1 system as root
+* su with a login shell to the rhel user
+* now try to su with a login shell as johnp, you should be prompted for the password
+* verify that you can login
+
+SUCCESS!
+
+We have learned to do the following:
+- run a playbook against a local machine and a remote machine.
+- provide a list of hosts that we want to automate through the inventory file.
+- filter that list using the --limit argument.
+- provide extra variables at the commandline and how to load them in a playbook through a file.
+- create secrets and store them in a vault file and use them a execution time.
+
+Awesome! Let's move to the next step.

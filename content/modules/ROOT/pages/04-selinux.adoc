@@ -62,11 +62,11 @@ cat selinux.yml
 
 === Ansible Playbook Explanation
 
-==== Title and Targets
-
 The playbook file is selinux.yml
 
-* *Hosts*: localhost - it is targeted at the local computer
+==== Hosts 
+
+* localhost - it is targeted at the local computer
 
 ==== Variables
 
@@ -77,11 +77,11 @@ The playbook file is selinux.yml
 
 * *rhel-system-roles.selinux*: This role sets up SELinux rules.
 
-Now lets run it with ansible
+Run the playbook.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts selinux.yml
+ansible-playbook -i hosts.ini selinux.yml
 ----
 
 Since we have made changes to the http service, we need to do is to restart the http service

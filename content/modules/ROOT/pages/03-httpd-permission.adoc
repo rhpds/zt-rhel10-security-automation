@@ -157,7 +157,7 @@ Use this as davidj’s password.
 redhat
 ----
 
-Is the service running? Let's get the status/
+Is the service running? Let's get the status.
 
 [source,bash,run]
 ----

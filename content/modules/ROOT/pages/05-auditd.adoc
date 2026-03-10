@@ -14,7 +14,7 @@ We will:
 * generate the configuration file
 * test AIDE by scanning a system for changes
 
-=== Ansible Playbook Explanation
+=== What does this playbook do?
 
 Lets look at the playbook for AIDE.
 
@@ -23,7 +23,7 @@ Lets look at the playbook for AIDE.
 cat aide.yml
 ----
 
-==== Playbook Overview
+==== Overview
 
 This Ansible playbook is named "`Example aide role invocation.`" 
 The playbook will run on all computers referenced for the play.
@@ -36,7 +36,8 @@ In this example, we examine an alternate way of defining variables.
 Using the method below, we are scoping the variables to the include_role task.
 
 [arabic]
-. *Include Role*:
+*Include Role*
+
 * *Name*: Include role aide
 * *Variables*:
 ** `+aide_db_fetch_dir: files+`: Tells the role to fetch the database files.
@@ -48,10 +49,10 @@ Using the method below, we are scoping the variables to the include_role task.
 * *Module*: `+ansible.builtin.include_role+`
 * *Role Name*: `+rhel-system-roles.aide+`
 
-==== What Does It Do?
+==== What happens when you run this playbook?
 
 In simple terms, this playbook tells Ansible to go to all of the computers passed from the inventory and run a set of instructions to install and set up the AIDE software. 
-The aide system role can also be used to add or remove periodic scanning by configuring cron and set the frequency of the cron job.
+The RHEL system role for AIDE can also be used to add or remove periodic scanning by configuring cron and set the frequency of the cron job.
 
 ==== Run the playbook
 
@@ -84,10 +85,16 @@ sudo aide --check
 ----
 
 This will take 45 to 90 seconds to scan.
-AIDE scans will also detect if a file has changed.
-This can help us determine if an installed file has been modified from the package provided file. 
-Changes may indicate that an attacker trying to embed their own commands in order to compromise the system.
+AIDE scans will detect if a files are added or changed.
+This can help us determine if an installed file has been modified from that one that the rpm package provided. 
+Changes in package sourced files may indicate that an attacker is trying to embed their own commands known software in order to compromise the system.
 
-We have seen how we can use rhel_system_roles to monitor system integrity. 
+The scan results will indicate the many file have been added to the system. This type of log can be analyzed by log systems to take appropriate action, including notifications, isolation and remediation.
+
+
+In this module you have seen how to:
+
+* install and configure AIDE with ansible
+* can use rhel_system_roles to monitor system integrity. 
 
 In our next section we will examine fapolicyd.

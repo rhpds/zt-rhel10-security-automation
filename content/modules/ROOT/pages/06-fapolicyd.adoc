@@ -21,10 +21,10 @@ Now lets look at a basic Fapolicyd playbook, where we want to install and enable
 cat fapolicyd.yml
 ----
 
-==== Title
+==== Overview
 
 The playbook is named "`Fapolicyd role invocation.`" 
-This is just a title to help you understand what the playbook is about.
+This becomes a logging identifier to help you track what the playbook has been executed.
 
 ==== Hosts
 

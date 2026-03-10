@@ -16,7 +16,7 @@ cat bsa.yml
 
 === What Does This Playbook Do?
 
-==== Title and Targets
+==== Overview
 
 * *Name*: The playbook is named "`Example Basic Security Automation (BSA) system roles.`"
 * *Hosts*: It will run on all the computers (hosts) that Ansible is managing.
@@ -59,32 +59,32 @@ ansible-playbook -i hosts.ini bsa.yml
 
 In this lab you learned the following:
 
-* the basics of running ansible securely
+* the basics of *running ansible securely*
 * how create users and groups securely
-* assing and manage permissions and local sudo rules
-* modify SELinux permissions and context
-* configure system integrity with aide
-* define an allow list of permitted applications using fapolicyd
-* define a basic security automation policy in a playbook
+* assigning and manage permissions and local *sudo rules*
+* *modify SELinux* permissions and context
+* configure system integrity with *aide*
+* define an allow list of permitted applications using *fapolicyd*
+* define a *basic security automation* policy in a playbook
 
 The rhel_system_roles provide for even more security configuration including:
 
-* configuring firewalld settings
-* configuring terminal logging through tlog
-* configuring log settings and forwarding
-* configuring system-wide cryptographic policy
-* binding encrypted volumes to networks and trusted platform modules
-* creating and renewing certificates
-* configuring VPN
-* configuring sshd
-* configuring Active Directory Integration
-* AND More
+* configuring *firewalld* settings
+* configuring *terminal logging* through tlog
+* configuring *log* settings and *forwarding*
+* configuring *system-wide cryptographic policy*
+* binding encrypted volumes to networks and *trusted platform modules*
+* creating and renewing *certificates*
+* configuring *VPN*
+* configuring *sshd*
+* configuring *Active Directory Integration*
+* and *More*
 
-Red Hat also provides the redhat.rhel_idm collection for managing centralized policy through Red Hat Identity Management.
+Red Hat also provides the *redhat.rhel_idm collection* for fully automating centralized policy through *Red Hat Identity Management*.
 
 Review our complete ducumentation for details.
 
-Thanks for your participation!
+**Thanks for your participation!**
 
 === Resources
 

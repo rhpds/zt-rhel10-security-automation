@@ -20,7 +20,7 @@ Lets look at the playbook for AIDE.
 
 [source,bash,run]
 ----
-cat aide.yml
+cat /home/rhel/aide.yml
 ----
 
 ==== Hosts
@@ -60,7 +60,7 @@ Create the AIDE configuration, initialize the database and create the baseling b
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini aide.yml
+ansible-playbook -i /home/rhel/hosts.ini /home/rhel/aide.yml
 ----
 
 Ok now that we have a baseline, we can check to see what the aide log looks like.

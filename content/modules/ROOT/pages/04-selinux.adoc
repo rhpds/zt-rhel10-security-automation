@@ -82,7 +82,7 @@ Run the playbook.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini selinux.yml
+ansible-playbook -i /home/rhel/hosts.ini /home/rhel/selinux.yml
 ----
 
 Since we have made changes to the http service, we need to do is to restart the http service

@@ -57,7 +57,7 @@ We have a playbook we can use.
 
 [source,bash,run]
 ----
-cat selinux.yml
+cat /home/rhel/selinux.yml
 ----
 
 === What does this playbook do?

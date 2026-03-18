@@ -133,7 +133,7 @@ Run the playbook again to apply the system roles to the local host.
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini  webdev.yml
+ansible-playbook -i /home/rhel/hosts.ini  /home/rhel/webdev.yml
 ----
 
 Let's log back into David’s account

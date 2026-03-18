@@ -74,7 +74,7 @@ couple of commands using the sudo system rules.
 
 [source,bash,run]
 ----
-cat webdev.yml
+cat /home/rhel/webdev.yml
 ----
 
 

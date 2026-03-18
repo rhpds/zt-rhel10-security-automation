@@ -18,7 +18,7 @@ Now lets look at a basic Fapolicyd playbook, where we want to install and enable
 
 [source,bash,run]
 ----
-cat fapolicyd.yml
+cat /home/rhel/fapolicyd.yml
 ----
 
 The playbook is named "`Fapolicyd role invocation.`" 
@@ -47,7 +47,7 @@ Now lets run it with ansible
 
 [source,bash,run]
 ----
-ansible-playbook -i hosts.ini fapolicyd.yml
+ansible-playbook -i /home/rhel/hosts.ini /home/rhel/fapolicyd.yml
 ----
 
 As you can see following the execution of the role, it takes into consideration all the checks and validations that need to occur to run fapolicyd correctly on a host. 

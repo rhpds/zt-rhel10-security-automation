@@ -118,6 +118,28 @@ EOF
 
 sudo yum install httpd -y
 
+# Ensure mod_ssl has non-empty PEM files at the paths ssl.conf references.
+# RHEL 10 base images ship 0-byte placeholder files; httpd refuses to start without real content.
+CERT=/etc/pki/tls/certs/localhost.crt
+KEY=/etc/pki/tls/private/localhost.key
+if [ ! -s "$CERT" ] || [ ! -s "$KEY" ]; then
+  command -v openssl >/dev/null 2>&1 || dnf install -y openssl
+  mkdir -p /etc/pki/tls/certs /etc/pki/tls/private
+  rm -f "$CERT" "$KEY"
+  if openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -keyout "$KEY" -out "$CERT" \
+    -subj '/CN=localhost' \
+    -addext 'subjectAltName=DNS:localhost' 2>/dev/null; then :
+  else
+    # Older openssl without -addext support (RHEL 8)
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+      -keyout "$KEY" -out "$CERT" -subj '/CN=localhost'
+  fi
+  chmod 600 "$KEY"
+  chmod 644 "$CERT"
+  echo "localhost TLS material generated" >> /root/post-run.log
+fi
+
 mkdir /home/davidj/public_html/
 
 

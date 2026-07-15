@@ -1,0 +1,56 @@
+# lab-metadata.yml
+# Single Point of Truth for Lab Information
+
+lab:
+  name: "RHEL 10 Security Automation Lab"
+  shortname: "zt-rhel10-security-automation"
+  maintainer: "Joshua Loscar (jloscar@redhat.com)" 
+  
+  description:
+    summary: "Get Started with System Roles on RHEL"
+    goal: "Red Hat Enterprise Linux System Roles are a collection of supported Ansible roles that ensure consistent workflows and streamline the execution of manual tasks. "
+    concepts:
+      - "quickly cover the ansible basics"
+      - "create users and groups securely"
+      - "manage permissions and local sudo rules"
+      - "modify SELinux permissions"
+      - "configure system integrity with aide"
+      - "define an allow list of permitted applications using fapolicyd"
+      - "define a basic security automation policy in a playbook"
+      
+    use_case: "Get familliar with the System Roles (Anisble) for RHEL operating model"
+    time_to_complete: "30" # time in minutes
+    
+  # Git references for deployment
+  git_ref:
+    production: "prod"
+    development: "dev"
+
+# DYNAMIC EXTRACTION SOURCES:
+# ===========================
+#
+# GENERATED FILES:
+# description.adoc: Generated from lab.description (goal, concepts, use_case)
+# README.md: Generated from configuration extraction (maintainer, summary, instances, networks, firewall)
+# dev.yaml: Generated using git_ref.development
+# prod.yaml: Generated using git_ref.production
+#
+# Example usage:
+# lab:
+#   name: "Red Hat OpenShift Networking Basics"
+#   shortname: "zt-networking-basics"
+#   
+#   description:
+#     summary: "Learn the fundamentals of networking in Red Hat OpenShift"
+#     goal: "Understand OpenShift networking concepts and configuration"
+#     concepts:
+#       - "OpenShift Services"
+#       - "Routes and Ingress"
+#       - "Network Policies"
+#     use_case: "Configure secure networking for containerized applications"
+#   
+#   git_ref:
+#     production: "prod"
+#     development: "dev"
+#
+#   maintainer: "Wilson Harris (wharris@redhat.com)"
